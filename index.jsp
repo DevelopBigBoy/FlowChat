@@ -19,7 +19,25 @@
 				<input type="button" class="fl-btn" id="btn-object" value="部件" />
 			</div>
 			<div class="top-left-panel">
+				<input type="button" class="fl-btn" id="new-box" value="新建流程图" />
+			</div>
+			<div class="top-left-panel">
+				<input type="button" class="fl-btn" id="creat_img" value="载入json数据" />
+			</div>
+			<div class="top-left-panel">
 				<input type="button" class="fl-btn" id="chart-save" value="查看json数据" />
+			</div>
+			<div class="top-left-panel">
+				<input type="button" class="fl-btn" id="line-mode" value="线条样式" />
+			</div>
+			<div class="top-right-panel">
+				<input type="button" class="fl-btn" id="text-chart-align" value="文字方向" />
+			</div>
+			<div class="top-right-panel">
+				<input type="button" class="fl-btn" id="text-font-style" value="文字样式" />
+			</div>
+			<div class="top-right-panel">
+				<input type="button" class="fl-btn" id="border-selector-style" value="流程图区域背景色" />
 			</div>
 		</div>
 		<div class="chart-content">
@@ -56,6 +74,30 @@
 					<h4 class="top-menu-selector" id="align-center">居中</h4>
 					<h4 class="top-menu-selector" id="align-right">居右</h4>
 				</div>
+			</div>
+			<div class="line-select" id="text-select-div" style="display:none">
+				<div class="chart-list chart-stylex">
+					<h4 class="fl-font-style" id="B">bold</h4>
+					<h4 class="fl-font-style" id="I">italic</h4>
+					<h4 class="fl-font-style" id="U">underline</h4>
+				</div>
+			</div>
+			<div class="line-select" id="border-selector-div" style="display:none">
+				<div class="chart-list chart-stylex">
+					<h4 class="right-style-selector" id="blue">蓝色</h4>
+					<h4 class="right-style-selector" id="white">白色</h4>
+					<h4 class="right-style-selector" id="pink">粉色</h4>
+					<h4 class="right-style-selector" id="dark">黑色</h4>
+					<h4 class="right-style-selector" id="purple">紫色</h4>
+				</div>
+			</div>
+			<!--自定义右键菜单html代码-->
+			<div id="menu">
+				<div class="menu" onclick="menu_operate();">功能1</div>
+				<div class="menu">功能2</div>
+				<div class="menu">功能3</div>
+				<div class="menu">功能4</div>
+				<div class="menu">功能5</div>
 			</div>
 		</div>
 		<div class="save-form" style="display:none">
@@ -377,7 +419,8 @@
 			function getChartShadowColor() {
 				var color = $('#' + sessionStorage['currentChartSelected']).css('box-shadow');
 				return(color == 'none') ? 'rgb(255,255,255)' : color;
-			} //设置属性栏的按钮样式
+			} 
+			//设置属性栏的按钮样式
 			function setChartFontStyleBtn(style) {
 				if(style != 'normal') {
 					var singleStyle = style.split('|');
@@ -387,7 +430,8 @@
 				} else {
 					$('#B,#I,#U').removeClass('fl-font-style-active');
 				}
-			} //取当前部件的font-style
+			} 
+			//取当前部件的font-style
 			function getChartFontStyle(id) {
 				if(id != '') {
 					var style = '';
@@ -744,8 +788,9 @@
 				return serliza;
 			}
 
-			//双击修改文本
+			//点击事件
 			function changeValue(id) {
+				//双击修改文本
 				$(id).dblclick(function() {
 					var text = $(this).text();
 					$(this).html("");
@@ -753,6 +798,10 @@
 					$(this).mouseleave(function() {
 						$(this).html($(".chart-text-edit").val());
 					});
+				});
+				//右键下拉菜单
+				$(id).contextmenu(function() {
+					rightMenu();
 				});
 			}
 
@@ -938,9 +987,8 @@
 
 				return true;
 			}
-
-			$(".creat_img").click(function() {
-
+			//重绘流程图(通过读取JSON数据重绘流程图)
+			$("#creat_img").click(function() {
 				loadChartByJSON('{"connects":[{"ConnectionId":"con_56","PageSourceId":"rect-01111111118","PageTargetId":"rect-010"},{"ConnectionId":"con_60","PageSourceId":"rect-01111111118","PageTargetId":"rect-01112"},{"ConnectionId":"con_64","PageSourceId":"rect-010","PageTargetId":"rect-0111114"},{"ConnectionId":"con_68","PageSourceId":"rect-010","PageTargetId":"rect-011111116"},{"ConnectionId":"con_72","PageSourceId":"rect-01112","PageTargetId":"rect-01111111111110"}],"block":[{"BlockId":"rect-010","BlockContent":"文本","BlockX":485,"BlockY":157,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"},{"BlockId":"rect-01112","BlockContent":"文本","BlockX":863,"BlockY":158,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"},{"BlockId":"rect-0111114","BlockContent":"文本","BlockX":348,"BlockY":383,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"},{"BlockId":"rect-011111116","BlockContent":"文本","BlockX":572,"BlockY":370,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"},{"BlockId":"rect-01111111118","BlockContent":"文本","BlockX":698,"BlockY":38,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"},{"BlockId":"rect-01111111111110","BlockContent":"文本","BlockX":1010,"BlockY":359,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"}]}');
 
 			});
@@ -1188,7 +1236,8 @@
 
 					//按钮的toggle,如果div是可见的,点击按钮切换为隐藏的;如果是隐藏的,切换为可见的。  
 					$(element).toggle('fast');
-				} //上方工具栏的按钮点击事件
+				} 
+				//上方工具栏的按钮点击事件
 				$('.fl-btn').click(function(event) {
 					//取被点击按钮的ID
 					var flBtnID = $(this).attr('id');
@@ -1213,24 +1262,42 @@
 							break;
 						case 'line-mode':
 							//设置线条样式
-
 							if(sessionStorage['topAlignSelectIsDisplayed'] == 'true') {
 								$('#align-select-div').toggle('fast');
+								$('#text-select-div').toggle('fast');
 								sessionStorage['topAlignSelectIsDisplayed'] = false;
 							}
-
 							selectorToggle(event, '#line-select-div');
 							sessionStorage['topLineSelectIsDisplayed'] = true;
 							break;
 						case 'text-chart-align':
 							//流程图框对齐或文本对齐
-
 							if(sessionStorage['topLineSelectIsDisplayed'] == 'true') {
 								$('#line-select-div').toggle('fast');
 								sessionStorage['topLineSelectIsDisplayed'] = false;
 							}
-
 							selectorToggle(event, '#align-select-div');
+							sessionStorage['topAlignSelectIsDisplayed'] = true;
+							break;
+						case 'text-font-style':
+							//文字样式
+							if(sessionStorage['topLineSelectIsDisplayed'] == 'true') {
+								$('#line-select-div').toggle('fast');
+								$('#align-select-div').toggle('fast');
+								sessionStorage['topLineSelectIsDisplayed'] = false;
+							}
+							selectorToggle(event, '#text-select-div');
+							sessionStorage['topAlignSelectIsDisplayed'] = true;
+							break;
+						case 'border-selector-style':
+							//流程图边框颜色
+							if(sessionStorage['topLineSelectIsDisplayed'] == 'true') {
+								$('#line-select-div').toggle('fast');
+								$('#align-select-div').toggle('fast');
+								$('#text-select-div').toggle('fast');
+								sessionStorage['topLineSelectIsDisplayed'] = false;
+							}
+							selectorToggle(event, '#border-selector-div');
 							sessionStorage['topAlignSelectIsDisplayed'] = true;
 							break;
 						case 'chart-save':
@@ -1240,7 +1307,6 @@
 							$('#save-json-form-display').html(jsondata);
 							html2canvas($('.droppable'), {
 								onrendered: function(canvas) {
-
 									var data = canvas.toDataURL("image/png");
 									console.log('<a href="' + data + '">Download</a>');
 									$('.save-img-href').html('<a href="' + data + '">Download</a>');
@@ -1291,7 +1357,8 @@
 				//切换字体样式按钮状态
 				function fontStyleBtnToggle(will) {
 					$('#' + will).toggleClass('fl-font-style-active');
-				} //字体样式按钮控制区域
+				} 
+				//字体样式按钮控制区域
 				$('.fl-font-style').click(function() {
 					var id = $(this).attr('id');
 					switch(id) {
@@ -1762,26 +1829,26 @@
 				//设置style
 				function setEnvironmentStyle(styleName) {
 					switch(styleName) {
-						case 'entertainment':
+						case 'blue':
 							console.log(styleName);
 							$('.droppable').css('background', 'rgb(173,219,225)');
 							break;
-						case 'enterprises':
+						case 'white':
 							$('.droppable').css('background', 'rgb(255,255,255)');
 							break;
-						case 'blue':
+						case 'pink':
 							$('.droppable').css('background', 'rgb(255,235,190)');
 							break;
 						case 'dark':
 							$('.droppable').css('background', 'rgb(6,1,0)');
 							break;
-						case 'pink':
+						case 'purple':
 							$('.droppable').css('background', 'rgb(127,0,185)');
 							break;
 					}
 				} //选择相应的style
 				$('.right-style-selector').click(function() {
-					var styleName = $(this).attr('id').split('-')[1];
+					var styleName = $(this).attr('id');
 					setEnvironmentStyle(styleName);
 				});
 
@@ -1794,6 +1861,32 @@
 				})
 
 			});
+			//设置右键下拉菜单
+			function rightMenu(){
+				//获取我们自定义的右键菜单
+				var menu=document.querySelector("#menu");
+					
+				window.oncontextmenu=function(e){
+					//取消默认的浏览器自带右键 很重要！！
+					e.preventDefault();
+					
+					//根据事件对象中鼠标点击的位置，进行定位
+					menu.style.left=e.clientX+'px';
+					menu.style.top=e.clientY+'px';
+					
+					//改变自定义菜单的宽，让它显示出来
+					menu.style.width='125px';
+				}
+				//关闭右键菜单，很简单
+				window.onclick=function(e){
+					//用户触发click事件就可以关闭了，因为绑定在window上，按事件冒泡处理，不会影响菜单的功能
+					document.querySelector('#menu').style.height=0;
+				}
+			}
+			//下拉菜单按钮事件
+			function menu_operate(){
+				alert("点击了功能点1，可以进行操作了，这里主要是提供菜单按钮使用的方法");
+			}
 		</script>
 		<script>
 			$(".cancalline").click(function() {
@@ -1801,8 +1894,43 @@
 					"display": "none"
 				});
 			})
-
+			//双击事件
 			jsPlumb.bind("dblclick", function(conn, originalEvent) {
+				$(".fuchuang").css({
+					"display": "block"
+				});
+				var aaa = conn.sourceId;
+				var bbb = conn.targetId;
+				jsPlumb.detach(conn);
+
+				$('.sureaaa').unbind("click");
+				$(".sureaaa").click(function() {
+					var PageSourceId = aaa;
+					var PageTargetId = bbb;
+					var innercont = $(".inputcont").val();
+					var common = {
+						anchors: ["RightMiddle", "LeftMiddle"],
+						endpoints: ["Blank", "Blank"],
+						label: innercont,
+						cssClass: PageSourceId + PageTargetId,
+					};
+
+					jsPlumb.connect({
+						source: PageSourceId,
+						target: PageTargetId,
+					}, common);
+
+					$("." + PageSourceId + PageTargetId).next().html(innercont)
+					$(".fuchuang").css({
+						"display": "none"
+					});
+
+				})
+				sessionStorage['currentChartAmount'] = sessionStorage['currentChartAmount'] + 2;
+
+			});
+			//右键下拉菜单
+			jsPlumb.bind("contextmenu", function(conn, originalEvent) {
 				$(".fuchuang").css({
 					"display": "block"
 				});

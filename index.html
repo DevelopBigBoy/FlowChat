@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style media="screen">
+			body {
+				overflow: hidden;
+			}
+			
+			.heart-body {
+				width: 500px;
+				margin: 100px auto;
+				position: relative;
+			}
+			
+			.snowfall-flakes:before,
+			.snowfall-flakes:after {
+				content: "";
+				position: absolute;
+				left: 8px;
+				display: block;
+				background: red;
+				width: 10px;
+				height: 16px;
+				border-radius: 10px 10px 0 0;
+			}
+			
+			.snowfall-flakes:before {
+				-webkit-transform: rotate(-45deg);
+				/* Safari 和 Chrome */
+				-moz-transform: rotate(-45deg);
+				/* Firefox */
+				-ms-transform: rotate(-45deg);
+				/* IE 9 */
+				-o-transform: rotate(-45deg);
+				/* Opera */
+				transform: rotate(-45deg);
+			}
+			
+			.snowfall-flakes:after {
+				left: 13px;
+				-webkit-transform: rotate(45deg);
+				/* Safari 和 Chrome */
+				-moz-transform: rotate(45deg);
+				/* Firefox */
+				-ms-transform: rotate(45deg);
+				/* IE 9 */
+				-o-transform: rotate(45deg);
+				/* Opera */
+				transform: rotate(45deg);
+			}
+			
+			.font-style {
+				color: red;
+				font-weight: 'bold';
+				font-family: '楷体';
+				background: '#aaa';
+				font-size: '18px';
+				display: inline-block;
+				width: 888px;
+				word-wrap: break-word;
+				white-space: pre;
+				line-height: 30px;
+				letter-spacing: 3px;
+				padding-left: 3px;
+				text-indent: 10px;
+				border-radius: 5px;
+				-webkit-box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.1);
+				-moz-box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.1);
+				box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.1);
+			}
+		</style>
+	</head>
+
+	<body style="background: blanchedalmond;">
+		<div id="myDiv" class="font-style"></div>
+		<script src="js/jquery.js" type="text/javascript"></script>
+		<script src="js/snowfall.jquery.js"></script>
+		<p style="text-align: right;">
+			<canvas id="c" height="500" width="500"></canvas>
+			<script>
+				var b = document.body;
+				var c = document.getElementsByTagName('canvas')[0];
+				var a = c.getContext('2d');
+				document.body.clientWidth;
+			</script>
+			<script>
+				with(m = Math) C = cos, S = sin, P = pow, R = random;
+				c.width = c.height = f = 500;
+				h = -250;
+
+				function p(a, b, c) {
+					if(c > 60) return [S(a * 7) * (13 + 5 / (.2 + P(b * 4, 4))) - S(b) * 50, b * f + 50, 625 + C(a * 7) * (13 + 5 / (.2 + P(b * 4, 4))) + b * 400, a * 1 - b / 2, a];
+					A = a * 2 - 1;
+					B = b * 2 - 1;
+					if(A * A + B * B < 1) {
+						if(c > 37) {
+							n = (j = c & 1) ? 6 : 4;
+							o = .5 / (a + .01) + C(b * 125) * 3 - a * 300;
+							w = b * h;
+							return [o * C(n) + w * S(n) + j * 610 - 390, o * S(n) - w * C(n) + 550 - j * 350, 1180 + C(B + A) * 99 - j * 300, .4 - a * .1 + P(1 - B * B, -h * 6) * .15 - a * b * .4 + C(a + b) / 5 + P(C((o * (a + 1) + (B > 0 ? w : -w)) / 25), 30) * .1 * (1 - B * B), o / 1e3 + .7 - o * w * 3e-6]
+						}
+						if(c > 32) {
+							c = c * 1.16 - .15;
+							o = a * 45 - 20;
+							w = b * b * h;
+							z = o * S(c) + w * C(c) + 620;
+							return [o * C(c) - w * S(c), 28 + C(B * .5) * 99 - b * b * b * 60 - z / 2 - h, z, (b * b * .3 + P((1 - (A * A)), 7) * .15 + .3) * b, b * .7]
+						}
+						o = A * (2 - b) * (80 - c * 2);
+						w = 99 - C(A) * 120 - C(b) * (-h - c * 4.9) + C(P(1 - b, 7)) * 50 + c * 2;
+						z = o * S(c) + w * C(c) + 700;
+						return [o * C(c) - w * S(c), B * 99 - C(P(b, 7)) * 50 - c / 3 - z / 1.35 + 450, z, (1 - b / 1.2) * .9 + a * .1, P((1 - b), 20) / 4 + .05]
+					}
+				}
+				setInterval('for(i=0;i<1e4;i++)if(s=p(R(),R(),i%46/.74)){z=s[2];x=~~(s[0]*f/z-h);y=~~(s[1]*f/z-h);if(!m[q=y*f+x]|m[q]>z)m[q]=z,a.fillStyle="rgb("+~(s[3]*h)+","+~(s[4]*h)+","+~(s[3]*s[3]*-80)+")",a.fillRect(x,y,1,1)}', 0)
+			</script><br>
+		</p>
+		<script>
+			//调用飘落函数 实现飘落效果
+			$(document).snowfall({
+				flakeCount: 99 //爱心的个数
+			});
+		</script>
+		<script>
+			window.onload = function() {
+				var myDiv = document.getElementById("myDiv");
+				var contentArr = "亲爱滴傻老婆：<br>   能够遇见你,对我来说是最大的幸福。有了你，我的生活变的绚丽多彩，有了你，世界变得如此迷人。<br>你是我的世界，我的世界是你。我愿意用自己的一生，好好的陪着你，爱着你。陪你到你想去的地方，<br>用心走完我们人生的余下的旅程。在未来的日子里，也许什么都无法确定，但唯一可以确定的是，我爱<br>的人是你，无论现在还是将来，我想我这里都会是你最温暖的港湾，都是为你遮风避雨的城墙。无论狂风<br>无论暴雨。我都会陪在你的身旁，让你不会感到丝毫的担心和惶恐。我会珍惜和你在一起的每一刻，每一<br>分，每一秒。谁叫你是我最爱的人，谁叫你是第二幸福的人（ 因为爱上她你是最幸福的了，哈哈）。<br>为了你，我愿用自己的双手为你撑起一片艳阳！".split("");
+				var content = "";
+				var index = 0;
+				var ID = setInterval(function() {
+					content += contentArr[index];
+					myDiv.innerHTML = content + "_";
+					index++;
+					if(index === contentArr.length) {
+						myDiv.innerHTML = content;
+						clearInterval(ID);
+						console.log("结束了");
+					}
+				}, 100);
+			}
+		</script>
+
+	</body>
+
+</html>

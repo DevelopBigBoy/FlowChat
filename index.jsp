@@ -419,7 +419,7 @@
 			function getChartShadowColor() {
 				var color = $('#' + sessionStorage['currentChartSelected']).css('box-shadow');
 				return(color == 'none') ? 'rgb(255,255,255)' : color;
-			} 
+			}
 			//设置属性栏的按钮样式
 			function setChartFontStyleBtn(style) {
 				if(style != 'normal') {
@@ -430,7 +430,7 @@
 				} else {
 					$('#B,#I,#U').removeClass('fl-font-style-active');
 				}
-			} 
+			}
 			//取当前部件的font-style
 			function getChartFontStyle(id) {
 				if(id != '') {
@@ -514,8 +514,8 @@
 				maxConnections: -1, // 设置连接点最多可以连接几条线
 				connectorOverlays: [
 					["Arrow", {
-						width: 10,
-						length: 10,
+						width: 20,
+						length: 20,
 						location: 1
 					}]
 				]
@@ -572,7 +572,8 @@
 							PageSourceId: list[i][j]['sourceId'],
 							PageTargetId: list[i][j]['targetId'],
 							Connectiontext: list[i][j].getLabel(),
-
+							PageSourceType: list[i][j].endpoints[0].anchor.type,
+							PageTargetType: list[i][j].endpoints[1].anchor.type,
 						});
 					}
 				}
@@ -690,6 +691,8 @@
 							PageSourceId: list[i][j]['sourceId'],
 							PageTargetId: list[i][j]['targetId'],
 							Connectiontext: list[i][j].getLabel(),
+							PageSourceType: list[i][j].endpoints[0].anchor.type,
+							PageTargetType: list[i][j].endpoints[1].anchor.type,
 						});
 					}
 				}
@@ -860,10 +863,6 @@
 				if(!unpack) {
 					return false;
 				}
-				/*flowConnector={
-				  anchors:["BottomCenter","TopCenter"],
-				  endpoints:["dot","blank"]
-				};*/
 
 				for(var i = 0; i < unpack['block'].length; i++) {
 					var BlockId = unpack['block'][i]['BlockId'];
@@ -917,23 +916,15 @@
 					changeValue("#" + BlockId)
 				}
 
-				/*  
-	  	
-    for (i=0;i<unpack['connects'].length;i++) {
-		list[i][ConnectionId]=unpack['connects'][i]['ConnectionId'];
-		list[i][PageSourceId]=unpack['connects'][i]['PageSourceId'];
-		list[i][PageTargetId]=unpack['connects'][i]['PageTargetId'];
-    }
-	*/
-
 				for(i = 0; i < unpack['connects'].length; i++) {
 
 					var ConnectionId = unpack['connects'][i]['ConnectionId'];
 					var PageSourceId = unpack['connects'][i]['PageSourceId'];
 					var PageTargetId = unpack['connects'][i]['PageTargetId'];
+					var PageSourceType = unpack['connects'][i]['PageSourceType'];
+					var PageTargetType = unpack['connects'][i]['PageTargetType'];
 
 					//用jsPlumb添加锚点
-
 					jsPlumb.addEndpoint(PageSourceId, {
 						anchors: "RightMiddle"
 					}, hollowCircle);
@@ -948,6 +939,22 @@
 
 					jsPlumb.addEndpoint(PageTargetId, {
 						anchors: "LeftMiddle"
+					}, hollowCircle);
+
+					jsPlumb.addEndpoint(PageSourceId, {
+						anchors: "TopCenter"
+					}, hollowCircle);
+
+					jsPlumb.addEndpoint(PageSourceId, {
+						anchors: "BottomCenter"
+					}, hollowCircle);
+
+					jsPlumb.addEndpoint(PageTargetId, {
+						anchors: "TopCenter"
+					}, hollowCircle);
+
+					jsPlumb.addEndpoint(PageTargetId, {
+						anchors: "BottomCenter"
 					}, hollowCircle);
 
 					jsPlumb.draggable(PageSourceId);
@@ -961,10 +968,16 @@
 					}); //保证拖动不跨界
 
 					var common = {
-						anchors: ["RightMiddle", "LeftMiddle"],
+						anchors: [PageSourceType, PageTargetType],
 						endpoints: ["Blank", "Blank"],
 						label: unpack['connects'][i]['Connectiontext'],
-
+						overlays: [
+							["Arrow",{
+								width: 20,
+								length: 20,
+								location: 1
+							}]
+						],
 					};
 
 					jsPlumb.connect({
@@ -989,12 +1002,9 @@
 			}
 			//重绘流程图(通过读取JSON数据重绘流程图)
 			$("#creat_img").click(function() {
-				loadChartByJSON('{"connects":[{"ConnectionId":"con_56","PageSourceId":"rect-01111111118","PageTargetId":"rect-010"},{"ConnectionId":"con_60","PageSourceId":"rect-01111111118","PageTargetId":"rect-01112"},{"ConnectionId":"con_64","PageSourceId":"rect-010","PageTargetId":"rect-0111114"},{"ConnectionId":"con_68","PageSourceId":"rect-010","PageTargetId":"rect-011111116"},{"ConnectionId":"con_72","PageSourceId":"rect-01112","PageTargetId":"rect-01111111111110"}],"block":[{"BlockId":"rect-010","BlockContent":"文本","BlockX":485,"BlockY":157,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"},{"BlockId":"rect-01112","BlockContent":"文本","BlockX":863,"BlockY":158,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"},{"BlockId":"rect-0111114","BlockContent":"文本","BlockX":348,"BlockY":383,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"},{"BlockId":"rect-011111116","BlockContent":"文本","BlockX":572,"BlockY":370,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"},{"BlockId":"rect-01111111118","BlockContent":"文本","BlockX":698,"BlockY":38,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"},{"BlockId":"rect-01111111111110","BlockContent":"文本","BlockX":1010,"BlockY":359,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none","BlockLineHeight":"15px"}]}');
+				loadChartByJSON('{"connects":[{"ConnectionId":"con_64","PageSourceId":"rect-01112","PageTargetId":"rect-0111114","Connectiontext":null,"PageSourceType":"BottomCenter","PageTargetType":"TopCenter"},{"ConnectionId":"con_68","PageSourceId":"rect-0111114","PageTargetId":"rect-011111116","Connectiontext":null,"PageSourceType":"LeftMiddle","PageTargetType":"RightMiddle"},{"ConnectionId":"con_85","PageSourceId":"rect-010","PageTargetId":"rect-01112","Connectiontext":"开始","PageSourceType":"RightMiddle","PageTargetType":"LeftMiddle"},{"ConnectionId":"con_91","PageSourceId":"rect-011111116","PageTargetId":"rect-01111111118","Connectiontext":"结束","PageSourceType":"LeftMiddle","PageTargetType":"TopCenter"}],"block":[{"BlockId":"rect-010","BlockContent":"讨论需求","BlockX":154,"BlockY":79,"BlockWidth":120,"BlockHeight":20,"BlockFont":"normal normal 400 normal 12px / normal arial","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0px","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(232, 84, 39)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none solid rgb(0, 0, 0)","BlockLineHeight":"normal"},{"BlockId":"rect-01112","BlockContent":"制定方案","BlockX":499,"BlockY":78,"BlockWidth":120,"BlockHeight":20,"BlockFont":"normal normal 400 normal 12px / normal arial","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0px","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(232, 84, 39)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none solid rgb(0, 0, 0)","BlockLineHeight":"normal"},{"BlockId":"rect-0111114","BlockContent":"程序开发","BlockX":622,"BlockY":331,"BlockWidth":120,"BlockHeight":20,"BlockFont":"normal normal 400 normal 12px / normal arial","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0px","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(232, 84, 39)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none solid rgb(0, 0, 0)","BlockLineHeight":"normal"},{"BlockId":"rect-011111116","BlockContent":"发布上线","BlockX":176,"BlockY":243,"BlockWidth":120,"BlockHeight":20,"BlockFont":"normal normal 400 normal 12px / normal arial","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0px","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(232, 84, 39)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none solid rgb(0, 0, 0)","BlockLineHeight":"normal"},{"BlockId":"rect-01111111118","BlockContent":"结束","BlockX":200,"BlockY":447,"BlockWidth":120,"BlockHeight":20,"BlockFont":"normal normal 400 normal 12px / normal arial","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"0px","BlockBackground":"rgb(255, 255, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(232, 84, 39)","BlockShadow":"none","BlockFontStyle":"normal","BlockFontWeight":"400","BlockFontUnderline":"none solid rgb(0, 0, 0)","BlockLineHeight":"normal"}]}');
 
 			});
-
-			//loadChartByJSON('{"connects":[],"block":[{"BlockId":"rect-01","BlockContent":"文本","BlockX":648,"BlockY":40,"BlockWidth":120,"BlockHeight":120,"BlockFont":"微软雅黑","BlockFontSize":"60px","BlockFontAlign":"center","BlockFontColor":"rgb(255, 255, 255)","BlockBorderRadius":"0","BlockBackground":"rgb(128, 0, 255)","BlockFillBlurRange":"85px","BlockFillBlurColor":"rgb(0,0,0)","BlockBorderStyle":"dashed","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"rgb(0, 0, 0) 30px 51px 85px 0px"},{"BlockId":"roundedRect-0111","BlockContent":"文本","BlockX":464,"BlockY":94,"BlockWidth":120,"BlockHeight":20,"BlockFont":"微软雅黑","BlockFontSize":"12px","BlockFontAlign":"center","BlockFontColor":"rgb(0, 0, 0)","BlockBorderRadius":"4","BlockBackground":"rgb(128, 0, 255)","BlockFillBlurColor":"noneundefinedundefined","BlockBorderStyle":"solid","BlockBorderWidth":"2px","BlockborderColor":"rgb(136, 242, 75)","BlockShadow":"none"}]}');
-			//sessionStorage['currentChartAmount']=sessionStorage['currentChartAmount']+2;
 
 			//删除一个流程框图,若参数undo为true则在进行操作时不进行入栈操作,默认为false
 			function deleteChart(id, undo) {
@@ -1236,7 +1246,7 @@
 
 					//按钮的toggle,如果div是可见的,点击按钮切换为隐藏的;如果是隐藏的,切换为可见的。  
 					$(element).toggle('fast');
-				} 
+				}
 				//上方工具栏的按钮点击事件
 				$('.fl-btn').click(function(event) {
 					//取被点击按钮的ID
@@ -1357,7 +1367,7 @@
 				//切换字体样式按钮状态
 				function fontStyleBtnToggle(will) {
 					$('#' + will).toggleClass('fl-font-style-active');
-				} 
+				}
 				//字体样式按钮控制区域
 				$('.fl-font-style').click(function() {
 					var id = $(this).attr('id');
@@ -1389,7 +1399,7 @@
 					helper: "clone", //复制自身
 					scope: "dragflag" //标识
 				});
-
+				var index = -1;
 				$(".droppable").droppable({
 					accept: ".draggable", //只接受来自类.dragable的元素
 					activeClass: "drop-active", //开始拖动时放置区域显示
@@ -1420,11 +1430,11 @@
 						jsPlumb.addEndpoint(trueId, {
 							anchors: "LeftMiddle"
 						}, hollowCircle);
-						
+
 						jsPlumb.addEndpoint(trueId, {
 							anchors: "TopCenter"
 						}, hollowCircle);
-						
+
 						jsPlumb.addEndpoint(trueId, {
 							anchors: "BottomCenter"
 						}, hollowCircle);
@@ -1438,9 +1448,7 @@
 
 						list = jsPlumb.getAllConnections(); //获取所有的连接
 
-						//元素ID网上加,防止重复
 						sessionStorage['idIndex'] = sessionStorage['idIndex'] + 1;
-
 						//设置当前选择的流程框图
 						sessionStorage['currentChartSelected'] = trueId;
 
@@ -1862,29 +1870,34 @@
 
 			});
 			//设置右键下拉菜单
-			function rightMenu(){
+			function rightMenu() {
 				//获取我们自定义的右键菜单
-				var menu=document.querySelector("#menu");
-					
-				window.oncontextmenu=function(e){
+				var menu = document.querySelector("#menu");
+
+				window.oncontextmenu = function(e) {
+					var e = e || window.event;
+
+					if(e.srcElement.id == "chart-container") {
+						return;
+					}
 					//取消默认的浏览器自带右键 很重要！！
 					e.preventDefault();
-					
+
 					//根据事件对象中鼠标点击的位置，进行定位
-					menu.style.left=e.clientX+'px';
-					menu.style.top=e.clientY+'px';
-					
+					menu.style.left = e.clientX + 'px';
+					menu.style.top = e.clientY + 'px';
+
 					//改变自定义菜单的宽，让它显示出来
-					menu.style.width='125px';
+					menu.style.width = '125px';
 				}
 				//关闭右键菜单，很简单
-				window.onclick=function(e){
+				window.onclick = function(e) {
 					//用户触发click事件就可以关闭了，因为绑定在window上，按事件冒泡处理，不会影响菜单的功能
-					document.querySelector('#menu').style.height=0;
+					document.querySelector('#menu').style.height = 0;
 				}
 			}
 			//下拉菜单按钮事件
-			function menu_operate(){
+			function menu_operate() {
 				alert("点击了功能点1，可以进行操作了，这里主要是提供菜单按钮使用的方法");
 			}
 		</script>
@@ -1901,6 +1914,8 @@
 				});
 				var aaa = conn.sourceId;
 				var bbb = conn.targetId;
+				var PageSourceType = conn.endpoints[0].anchor.type;
+				var PageTargetType = conn.endpoints[1].anchor.type;
 				jsPlumb.detach(conn);
 
 				$('.sureaaa').unbind("click");
@@ -1909,10 +1924,17 @@
 					var PageTargetId = bbb;
 					var innercont = $(".inputcont").val();
 					var common = {
-						anchors: ["RightMiddle", "LeftMiddle"],
+						anchors: [PageSourceType, PageTargetType],
 						endpoints: ["Blank", "Blank"],
 						label: innercont,
 						cssClass: PageSourceId + PageTargetId,
+						overlays: [
+							["Arrow",{
+								width: 20,
+								length: 20,
+								location: 1
+							}]
+						],
 					};
 
 					jsPlumb.connect({
@@ -1936,6 +1958,8 @@
 				});
 				var aaa = conn.sourceId;
 				var bbb = conn.targetId;
+				var PageSourceType = conn.endpoints[0].anchor.type;
+				var PageTargetType = conn.endpoints[1].anchor.type;
 				jsPlumb.detach(conn);
 
 				$('.sureaaa').unbind("click");
@@ -1944,10 +1968,17 @@
 					var PageTargetId = bbb;
 					var innercont = $(".inputcont").val();
 					var common = {
-						anchors: ["RightMiddle", "LeftMiddle"],
+						anchors: [PageSourceType, PageTargetType],
 						endpoints: ["Blank", "Blank"],
 						label: innercont,
 						cssClass: PageSourceId + PageTargetId,
+						overlays: [
+							["Arrow",{
+								width: 20,
+								length: 20,
+								location: 1
+							}]
+						],
 					};
 
 					jsPlumb.connect({
